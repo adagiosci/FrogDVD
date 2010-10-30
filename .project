@@ -1,0 +1,5 @@
+# Gambas Project File 2.0
+Title=FrogDVD
+Startup=FMain
+Library=gb.gui
+Library=gb.form

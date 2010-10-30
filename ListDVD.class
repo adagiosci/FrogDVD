@@ -1,0 +1,18 @@
+' Gambas class file
+PUBLIC cList AS Collection
+
+PUBLIC SUB _new()
+  ME.cList = NEW Collection  
+END
+
+PUBLIC FUNCTION Type_node(node AS String) AS String
+  DIM aList AS StructList
+  aList = ME.cList[node]
+  RETURN aList.type  
+END
+
+PUBLIC SUB AddList(node AS String, type AS String)
+  DIM aList AS StructList
+  aList = NEW StructList(node, type)
+  ME.cList.Add(aList, node)
+END

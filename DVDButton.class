@@ -1,0 +1,16 @@
+' Gambas class file
+PUBLIC x0 AS Integer
+PUBLIC y0 AS Integer
+PUBLIC xf AS Integer
+PUBLIC yf AS Integer
+PUBLIC Action AS Scene
+PUBLIC Name AS String
+
+PUBLIC SUB _new(_Name AS String, x0 AS Integer, y0 AS Integer, xf AS Integer, yf AS Integer)
+  
+  ME.x0 = x0
+  ME.y0 = y0
+  ME.xf = xf
+  ME.yf = yf
+  ME.Name = _Name
+END

@@ -1,0 +1,11 @@
+' Gambas class file
+PUBLIC type AS String
+PUBLIC name AS String
+
+PUBLIC SUB _new(_type AS String, _name AS String)
+  
+  ME.type = _type
+  ME.name = _name
+   
+END
+

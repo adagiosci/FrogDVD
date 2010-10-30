@@ -1,0 +1,56 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,81,79)
+  Text = ("")
+  { MenuArchivo Menu
+    Text = ("\xC3\x81rchivo")
+    { MenuNuevo Menu
+      Text = ("Nuevo")
+    }
+    { MenuSalir Menu
+      Text = ("Salir")
+    }
+  }
+  { MenuEdicion Menu
+    Text = ("Edici\xC3\xB3n")
+  }
+  { MenuCompilar Menu
+    Text = ("Compilar")
+  }
+  { MenuAyuda Menu
+    Text = ("Ayuda")
+  }
+  { ToolPanel1 ToolPanel
+    MoveScaled(0,0,81,6)
+    Index = 0
+    Text = ("Toolbar 0")
+    Index = 0
+  }
+  { TreeView1 TreeView
+    MoveScaled(1,6,28,68)
+  }
+  { Panel1 Panel
+    MoveScaled(30,7,52,67)
+    { ComboBox1 ComboBox
+      MoveScaled(3,6,17,3)
+      Text = ("")
+    }
+    { Label1 Label
+      MoveScaled(3,2,14,4)
+      Text = ("Audio de Fondo")
+    }
+    { Label2 Label
+      MoveScaled(3,10,18,3)
+      Text = ("Imagen de Fondo")
+    }
+    { ComboBox2 ComboBox
+      MoveScaled(3,14,17,3)
+      Text = ("")
+    }
+    { PictureBox1 PictureBox
+      MoveScaled(23,1,22,64)
+      Picture = Picture["remote.jpg"]
+    }
+  }
+}

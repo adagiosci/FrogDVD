@@ -1,0 +1,21 @@
+' Gambas class file
+PUBLIC Name AS String
+PUBLIC Scenes AS Collection
+
+PUBLIC SUB _new(_name AS String)
+  ME.Scenes = NEW Collection
+  ME.Name = _name
+END
+
+
+PUBLIC SUB AddScene(SceneName AS String)
+  DIM aScene AS Scene
+  
+  aScene = NEW Scene(SceneName)
+  Scenes.Add(aScene, aScene.Name)
+END
+
+PUBLIC FUNCTION FindScene(SceneName AS String) AS Scene  
+  RETURN ME.Scenes[SceneName]  
+END
+

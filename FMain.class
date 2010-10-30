@@ -1,0 +1,103 @@
+' Gambas class file
+PUBLIC Project AS DVDProject
+PUBLIC List AS ListDVD
+
+PUBLIC SUB _new()
+ 
+END
+
+PUBLIC SUB Form_Open()
+  List = NEW ListDVD
+END
+
+PUBLIC SUB TreeView1_DblClick()
+  DIM aScene AS Scene
+  DIM SceneName AS String
+  DIM ButtonName AS String
+  DIM aButton AS DVDButton
+  DIM CurrentScene AS Scene  
+  DIM type AS String
+  
+  type = List.type_node(TreeView1.Current.Key)  
+  IF type = "proyect" THEN
+    SceneName = InputBox("Nombre de la Escena", "Escena")
+    IF NOT SceneName = FALSE THEN 
+      TreeView1.Add(SceneName, SceneName, NULL, TreeView1.Current.Key, NULL)
+      ME.Project.AddScene(SceneName)
+      List.AddList(SceneName, "scene")
+    ENDIF   
+ 
+  ELSE IF type = "scene" THEN 
+    ButtonName = InputBox("Nombre del botón", "Botón")
+    IF NOT ButtonName = FALSE THEN 
+      TreeView1.Add(ButtonName, ButtonName, NULL, TreeView1.Current.Key, NULL)
+      CurrentScene = ME.Project.FindScene(TreeView1.Current.Key)  
+      CurrentScene.AddButton(ButtonName)
+      List.AddList(ButtonName, "button")
+    ENDIF 
+  ELSE IF type = "button" THEN
+    Message("Type " & type & " imposible do a action") 
+  ELSE 
+    Message("Desconocido: " & type)
+  ENDIF 
+END
+
+PUBLIC SUB MenuSalir_Click()
+
+  ME.Close
+
+END
+
+PUBLIC SUB Form_Close()
+
+  ME.Close
+
+END
+
+PUBLIC SUB MenuNuevo_Click()
+  DIM ProjectName AS String  
+  ProjectName = InputBox("Proyecto Nuevo", "Nombre")
+  IF NOT ProjectName = FALSE THEN
+    ME.Project = NEW DVDProject(ProjectName)
+    ME.Title = "FrogDVD salida: " & ProjectName
+    TreeView1.Add(ProjectName, ProjectName, NULL, NULL, NULL)
+    List.AddList(ProjectName, "proyect")
+    TreeView1[ProjectName].Expanded = TRUE    
+  ENDIF 
+END
+
+PUBLIC SUB TreeView1_Click()
+  DIM CurrentScene AS Scene
+  CurrentScene = ME.Project.FindScene(TreeView1.Current.Key)
+
+END
+
+PUBLIC SUB PictureBox1_MouseUp()
+
+  DIM xc AS Integer
+  DIM yc AS Integer
+
+  xc = Mouse.X
+  yc = Mouse.Y
+
+  'NOTA: Creamos un mapa que identifica las coordenadas de cada botón
+  '      y actuamos dependiendo del botón presionado
+  '72, 43 - 118, 65 DISPLAY
+  IF xc >= 72 AND xc <= 118 AND yc >= 43 AND yc <= 65 THEN 
+    Message("Click a DISPLAY")
+  ENDIF
+  '45, 75 - 71, 93 REVERSE
+  IF xc >= 45 AND xc <= 71 AND yc >= 75 AND yc <= 93 THEN 
+    Message("Click a REVERSE")
+  ENDIF
+  '82, 74 - 112, 93 PLAY
+  IF xc >= 82 AND xc <= 112 AND yc >= 74 AND yc <= 93 THEN 
+    Message("Click a PLAY")
+  ENDIF
+  '121, 76 - 143, 94 FORWARD
+  IF xc >= 121 AND xc <= 143 AND yc >= 76 AND yc <= 94 THEN 
+    Message("Click a FORWARD")
+  ENDIF
+
+
+END
