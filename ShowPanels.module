@@ -1,0 +1,73 @@
+' Gambas module file
+
+PUBLIC pnlProyect AS Panel
+PUBLIC pnlButton AS Panel
+PUBLIC pnlChapter AS Panel
+PUBLIC pnlScene AS Panel
+PUBLIC pnlTitle AS Panel   
+PUBLIC pnlTitleSet AS Panel 
+
+
+PUBLIC FUNCTION ShowPnlProyect()
+  pnlProyect.Visible = TRUE
+  pnlButton.Visible = FALSE
+  pnlChapter.Visible = FALSE
+  pnlScene.Visible = FALSE
+  pnlTitle.Visible = FALSE 
+  pnlTitleSet.Visible = FALSE  
+END 
+
+PUBLIC FUNCTION ShowPnlButton()
+  pnlProyect.Visible = FALSE
+  pnlButton.Visible = TRUE
+  pnlChapter.Visible = FALSE
+  pnlScene.Visible = FALSE
+  pnlTitle.Visible = FALSE  
+  pnlTitleSet.Visible = FALSE  
+END
+
+PUBLIC FUNCTION ShowPnlChapter()
+  pnlProyect.Visible = FALSE
+  pnlButton.Visible = FALSE
+  pnlChapter.Visible = TRUE
+  pnlScene.Visible = FALSE
+  pnlTitle.Visible = FALSE
+  pnlTitleSet.Visible = FALSE    
+END
+
+PUBLIC FUNCTION ShowPnlScene()
+  pnlProyect.Visible = FALSE
+  pnlButton.Visible = FALSE
+  pnlChapter.Visible = FALSE
+  pnlScene.Visible = TRUE
+  pnlTitle.Visible = FALSE   
+  pnlTitleSet.Visible = FALSE 
+END
+
+PUBLIC FUNCTION ShowPnlTitleSet()
+  pnlProyect.Visible = FALSE
+  pnlButton.Visible = FALSE
+  pnlChapter.Visible = FALSE
+  pnlScene.Visible = FALSE
+  pnlTitle.Visible = FALSE   
+  pnlTitleSet.Visible = TRUE
+END
+
+PUBLIC FUNCTION ShowPnlTitle()
+  pnlProyect.Visible = FALSE
+  pnlButton.Visible = FALSE
+  pnlChapter.Visible = FALSE
+  pnlScene.Visible = FALSE
+  pnlTitle.Visible = TRUE 
+  pnlTitleSet.Visible = FALSE  
+END
+
+
+PUBLIC FUNCTION HidePnls()
+  pnlProyect.Visible = FALSE
+  pnlButton.Visible = FALSE
+  pnlChapter.Visible = FALSE
+  pnlScene.Visible = FALSE
+  pnlTitle.Visible = FALSE   
+  pnlTitleSet.Visible = FALSE 
+END

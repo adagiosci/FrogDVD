@@ -1,21 +1,290 @@
 ' Gambas class file
 PUBLIC Name AS String
-PUBLIC Scenes AS Collection
+PUBLIC Titlesets AS Collection
+PUBLIC List AS ListDVD
+PUBLIC Path AS String
+PUBLIC proceso AS Process
+PUBLIC contenido AS String
+PUBLIC TextArea2 AS TextArea
 
-PUBLIC SUB _new(_name AS String)
-  ME.Scenes = NEW Collection
-  ME.Name = _name
+PUBLIC SUB _new(name AS String, Path AS String)
+  ME.Titlesets = NEW Collection
+  ME.List = NEW ListDVD
+  ME.Name = name
+  ME.Path = Path
 END
 
-
-PUBLIC SUB AddScene(SceneName AS String)
-  DIM aScene AS Scene
+PUBLIC SUB Play(TextArea2 AS TextArea)
   
-  aScene = NEW Scene(SceneName)
-  Scenes.Add(aScene, aScene.Name)
+  DIM script AS String
+  
+  ME.TextArea2 = TextArea2
+  script = "xine dvd:" & ME.Path & "DVDi/"
+  ME.proceso = SHELL (script) WAIT FOR READ 
+  
 END
 
-PUBLIC FUNCTION FindScene(SceneName AS String) AS Scene  
-  RETURN ME.Scenes[SceneName]  
+'Operaciones find
+
+PUBLIC FUNCTION Type_node(key AS String) AS String 
+  RETURN ME.List.Type_node(key)  
+END
+
+PUBLIC FUNCTION FindTitleset(TitlesetName AS String) AS DVDtitleset  
+  RETURN ME.Titlesets[TitlesetName]  
+END
+
+PUBLIC FUNCTION FindScene(key AS String) AS DVDScene
+  RETURN ME.List.TObject(key)
+END
+
+PUBLIC FUNCTION FindButton(key AS String) AS DVDButton  
+   RETURN ME.List.TObject(key)  
+END
+
+PUBLIC FUNCTION FindChapter(key AS String) AS DVDChapter
+  
+  RETURN ME.List.TObject(key)
+  
+END
+
+PUBLIC FUNCTION FindTitle(key AS String) AS DVDTitle
+  
+  RETURN ME.List.TObject(key)
+  
+END
+
+
+'Operaciones de Add
+PUBLIC SUB AddButton(aTreeView AS TreeView, ButtonName AS String, parent AS String) AS DVDButton  
+  DIM CurrentScene AS DVDScene
+  DIM button AS DVDButton
+  DIM picButton AS Picture  
+  
+  picButton = Picture["button.png"]
+  
+  aTreeView.Add(ButtonName, ButtonName, picButton, parent, NULL)  
+  CurrentScene = ME.FindScene(parent)
+  CurrentScene.AddButton(ButtonName, ME.List)
+  
+  RETURN CurrentScene.FindButton(ButtonName)
+END
+
+PUBLIC SUB AddChapter(aTreeView AS TreeView, ChapterName AS String, parent AS String) AS DVDChapter 
+  DIM CurrentTitle AS DVDTitle
+  
+  aTreeView.Add(ChapterName, ChapterName, NULL, parent, NULL)   
+  CurrentTitle = ME.FindTitle(aTreeView.Current.Key)    
+  CurrentTitle.AddChapter(ChapterName, List)
+  
+  RETURN CurrentTitle.FindChapter(ChapterName)
+END
+
+PUBLIC SUB AddScene(aTreeView AS TreeView, SceneName AS String, parent AS String, nametset AS String) AS DVDScene
+  DIM CurrentTitleset AS DVDtitleset
+  DIM picScene AS Picture
+  DIM aSecene AS DVDScene
+  
+  picScene = Picture["escene.png"]
+  
+  aTreeView.Add(SceneName, SceneName, picScene, parent, NULL) 'Agregar la scena al Titleset        
+  CurrentTitleset = FindTitleset(nametset)
+  CurrentTitleset.AddScene(SceneName, ME.List)
+  
+  RETURN CurrentTitleset.FindScene(SceneName)
+END
+
+PUBLIC SUB AddTitle(aTreeView AS TreeView, TitleName AS String, parent AS String, nametset AS String) AS DVDTitle
+  DIM CurrentTitleset AS DVDtitleset 
+  DIM aTitle AS DVDTitle
+  DIM picTitle AS Picture 
+  
+  aTreeView.Add(TitleName, TitleName, NULL, parent, NULL)
+  CurrentTitleset = FindTitleset(nametset)
+  CurrentTitleset.AddTitle(TitleName, ME.List)
+  
+  RETURN CurrentTitleset.FindTitle(TitleName)
+END
+
+PUBLIC SUB AddTitleset(aTreeView AS TreeView, TitlesetName AS String)
+  DIM picTitleset AS Picture
+  DIM aTitleset AS DVDtitleset
+  
+  picTitleset = Picture["titleset.png"]
+
+  aTreeView.Add(TitlesetName, TitlesetName, picTitleset, aTreeView.Current.Key, NULL) 'Agregamos el titleset al proyecto
+  aTitleset = NEW DVDtitleset(TitlesetName, ME.Path)
+  ME.Titlesets.Add(aTitleset, aTitleset.Name)      
+  aTreeView.Add("Escenas" & TitlesetName, "Escenas", NULL, TitlesetName, NULL)
+  aTreeView.Add("Titulos" & TitlesetName, "Titulos", NULL, TitlesetName, NULL)                
+  List.AddList(TitlesetName, "titleset", aTitleset)
+  List.AddList("Escenas" & TitlesetName, "scenes", NULL)
+  List.AddList("Titulos" & TitlesetName, "titles", NULL)  
+  
+END
+
+'Funciones de inserción
+PUBLIC SUB InsertChapter(aTreeView AS TreeView)  
+  DIM ChapterName AS String 
+      
+  ChapterName = InputBox("Nombre del Capitulo", "Capitulo")
+  IF NOT ChapterName = FALSE THEN
+    IF NOT ME.List.CheckExistNode(ChapterName) THEN     
+      ME.AddChapter(aTreeView, ChapterName, aTreeView.Current.Key)
+    ELSE
+      Message("Hay un nodo con ese nombre")
+    ENDIF 'fin if list.checkexistnode  
+  ENDIF 'fin scenename = false 
+    
+END
+
+PUBLIC SUB InsertButton(aTreeView AS TreeView)
+  DIM ButtonName AS String 
+   
+  ButtonName = InputBox("Nombre del botón", "Botón")  
+  IF NOT ButtonName = FALSE THEN
+    IF NOT ME.List.CheckExistNode(ButtonName) THEN     
+      ME.AddButton(aTreeView, ButtonName, aTreeView.Current.Key)
+    ELSE
+      Message("Hay un nodo con ese nombre")
+    ENDIF 'fin if list.checkexistnode  
+  ENDIF 'fin scenename = false   
+END
+
+PUBLIC SUB InsertScene(aTreeView AS TreeView, nametset AS String)
+  DIM SceneName AS String 
+  SceneName = InputBox("Nombre de la Escena", "Escena")
+  IF NOT SceneName = FALSE THEN 
+    IF NOT ME.List.CheckExistNode(SceneName) THEN
+      ME.AddScene(aTreeView, SceneName, aTreeView.Current.Key, nametset)
+    ELSE
+      Message("Hay un nodo como ese nombre")   
+    ENDIF 'End List.CheckExistNode
+  ENDIF 'End if SceneName = false  
+  
+END
+
+PUBLIC SUB InsertTitle(aTreeView AS TreeView, nametset AS String)
+  DIM TitleName AS String
+  
+  TitleName = InputBox("Nombre del titulo", "Titulo")
+  IF NOT TitleName = FALSE THEN 
+    IF NOT ME.List.CheckExistNode(TitleName) THEN 
+      ME.AddTitle(aTreeView, TitleName, aTreeView.Current.Key, nametset)
+    ELSE
+      Message("Hay un nodo como ese nombre")   
+    ENDIF 'End List.CheckExistNode
+  ENDIF 'End if SceneName = false  
+  
+END
+
+PUBLIC SUB InsertTitleSet(aTreeView AS TreeView)
+  DIM TitlesetName AS String
+    
+  TitlesetName = InputBox("Nombre del Conjunto de Titulos", "Conjunto de Titulos")
+  IF NOT TitlesetName = FALSE THEN
+    IF NOT ME.List.CheckExistNode(TitlesetName) THEN  
+      ME.AddTitleset(aTreeView, TitlesetName)
+    ELSE 
+      Message("Hay un nodo con ese nombre")
+    ENDIF 'fin if list.checkexistnode
+  ENDIF  'fin scenename = false  
+  
+END
+
+PUBLIC FUNCTION TraslateSpumuxXml(TextArea2 AS TextArea) AS String
+  DIM aTitleset AS DVDtitleset
+  DIM s AS String
+  DIM i AS String
+
+  s = ""
+  FOR EACH aTitleset IN Titlesets   
+      s = s & aTitleset.TraslateSpumuxXml(TextArea2) & "\n\n" 
+  NEXT   
+  
+  RETURN s 
+END 
+
+PUBLIC FUNCTION TraslateDvdauthorXml() AS String
+  DIM aTitleset AS DVDtitleset
+  DIM s AS String
+  DIM i AS Integer
+  
+  s = "<dvdauthor dest=\"" & ME.Path & "DVDi\" jumppad=\"1\">\n"
+  s = s & "<vmgm>\n"
+  s = s & "<menus lang=\"en\">\n"
+  s = s & "<video format=\"ntsc\" aspect=\"16:9\" resolution=\"720x480\" />\n"
+  s = s & "<pgc entry=\"title\">\n"
+  s = s & "<pre>\n"
+ 
+
+ 
+   FOR EACH aTitleset IN Titlesets   
+      s = s & "g2 = random(" & Str(aTitleset.CountScenes()) & ");\n"
+      FOR i = 1 TO aTitleset.CountScenes() STEP 1
+      s = s & "if(g2 eq " & Str(i) & ") jump titleset 1 menu " & Str(i) & ";\n"  
+      NEXT  
+   NEXT  
+  
+  s = s & "</pre>\n"
+  s = s & "</pgc>\n"
+  s = s & "</menus>\n"
+  s = s & "</vmgm >\n"
+  
+  FOR EACH aTitleset IN Titlesets   
+      s = s & aTitleset.TraslateDvdauthorXml() & "\n\n"      
+  NEXT 
+  
+  s = s & "</dvdauthor>\n"
+  RETURN s 
+END ' TraslateDvdauthorXml
+
+PUBLIC SUB produce(TextArea2 AS TextArea)
+  DIM script AS String
+  
+  ME.TextArea2 = TextArea2
+  script = "dvdauthor -x " & ME.Path & "dvd/dvd.xml"
+  ME.proceso = SHELL (script) WAIT FOR READ  
+END 'SaveXMLDVD
+
+
+PUBLIC SUB Process_Read()
+
+  DIM sLine AS String
+
+  LINE INPUT #LAST, sLine
+  
+  ME.contenido = ME.contenido & sLine
+  ME.TextArea2.text = ME.contenido
+
+END
+
+PUBLIC SUB SaveXMLDVD(s AS String, name AS String) 
+ 
+  DIM F AS file 'declarar un manejador de fichero 
+  f = OPEN ME.Path & "dvd/" & name FOR CREATE 'abrir el archivo archivo.txt para crearlo.
+  f.EndOfLine = gb.unix 'El fin de línea es LF
+  PRINT #f, s 'imprimir 3 variables separadas por tabulador 
+  CLOSE (f) 
+
+END
+
+PUBLIC SUB SaveProject()
+  DIM writer AS XmlWriter
+  DIM aTitleset AS DVDtitleset
+  DIM i AS Integer
+  writer = NEW XmlWriter
+  
+  writer.Open(ME.Path & "dvd/frogdvd.xml", TRUE)
+  writer.StartElement("project")
+  writer.Attribute("name", ME.Name)
+  i = 1
+  FOR EACH aTitleset IN ME.Titlesets
+    aTitleset.SaveTitleSet(writer, i)
+    i = i + 1
+  NEXT 
+  writer.EndElement 'Project
+  writer.EndDocument()
+  
 END
 

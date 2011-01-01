@@ -3,15 +3,44 @@ PUBLIC Name AS String
 PUBLIC Buttons AS Collection
 PUBLIC Audio AS String
 PUBLIC Background AS String
+PUBLIC Highlight AS String
+PUBLIC aSelect AS String
 
-PUBLIC SUB _new(aName AS String)  
-  ME.Name = aName  
-  ME.Buttons NEW Collection
+PUBLIC SUB _new(Name AS String) 
+  ME.Buttons = NEW Collection 
+  ME.Name = Name  
+  ME.aSelect = "Select"
+  ME.Highlight = "Highlight"
+  ME.Background = "Background"
 END
 
 PUBLIC SUB AddButton(ButtonName AS String)
   DIM aButton AS DVDButton  
     
-  aButton = NEW DVDButton(ButtonName, 1, 1, 1, 1)
-  Buttons.Add(aButton, aButton.Name)
+  aButton = NEW DVDButton(ButtonName, 1, 1, 1, 1)  
+  ME.Buttons.Add(aButton, aButton.Name)
+END
+
+PUBLIC FUNCTION FindButton(ButtonName AS String) AS DVDButton 
+  RETURN ME.Buttons[ButtonName]  
+END
+
+PUBLIC FUNCTION traslatexml() AS String
+   DIM aButton AS DVDButton 
+   DIM s AS String
+   
+   DIM head AS String
+   DIM Highlight AS String
+   DIM aSelect AS String
+   DIM footer AS String
+   s = ""
+   head = "<subpicture> \n <stream> \n <spu start=\"00:00:00.0\" end=\"00:00:00.0\" \n force=\"yes\" \n"
+   Highlight = "highlight=\"" & ME.Highlight & "\" \n"
+   aSelect = "select=\"" & ME.aSelect & "\">\n"
+   footer = "</spu> \n </stream> \n </subpictures>"
+   FOR EACH aButton IN ME.Buttons   
+      s = s & aButton.TraslateXml() & "\n"       
+   NEXT 
+    s = head & Highlight & aSelect & s & footer
+   RETURN s
 END

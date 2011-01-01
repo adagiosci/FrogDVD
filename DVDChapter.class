@@ -1,0 +1,31 @@
+' Gambas class file
+PUBLIC Name AS String
+PUBLIC Video AS String
+PUBLIC File AS String
+PUBLIC Action AS String
+PUBLIC Path AS String
+  
+PUBLIC SUB _new(name AS String, Path AS String)  
+  ME.Name = name
+  ME.Video = ""
+  ME.File = ""
+  ME.Action = ""
+  ME.Path = Path
+  
+END
+
+PUBLIC FUNCTION TraslateDvdauthorXml() AS String
+ DIM s AS String
+ s = ""
+ 
+ s = s & "<vob file=\"" & ME.Path & "chapters/" & ME.File & "\" chapters=\"00:00:00.000\"/>"
+ s = s & "<post>" & ME.Action & "; </post>"
+ RETURN s
+ END 
+ 
+PUBLIC SUB SaveChapter(writer AS XmlWriter, _i AS Integer)
+  writer.StartElement("chapter", ["id", Str(_i), "name", ME.Name, "path", ME.Path, "file", ME.File])
+  writer.EndElement  
+END
+
+ 

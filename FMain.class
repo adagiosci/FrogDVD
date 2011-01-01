@@ -1,46 +1,143 @@
 ' Gambas class file
 PUBLIC Project AS DVDProject
-PUBLIC List AS ListDVD
+PUBLIC ProjectName AS String  
+PUBLIC CurrentButton AS DVDButton
+PUBLIC CurrentScene AS DVDScene
+PUBLIC CurrentChapter AS DVDChapter
+PUBLIC proceso AS Process
+PUBLIC contenido AS String 
+PUBLIC LisFiles AS string[] 
+PUBLIC MiPath AS String 
+PUBLIC File AS String
+PUBLIC i AS Integer
 
 PUBLIC SUB _new()
+
+'Module of Showpanel
+'  ShowPanels.pnlButton = pnlButton
+ ' ShowPanels.pnlChapter = pnlChapter
+  'ShowPanels.pnlProyect = pnlProyect
+  'ShowPanels.pnlScene = pnlScene
+  'ShowPanels.pnlTitle = pnlTitle
+  'ShowPanels.pnlTitleSet = pnlTitleSet
  
+ 'Module if LoadInfo Buttons
+  LoadInfo.txtBtnDown = txtBtnDown
+  LoadInfo.txtBtnLeft = txtBtnLeft
+  LoadInfo.txtBtnName = txtBtnName
+  LoadInfo.txtBtnRight = txtBtnRight
+  LoadInfo.txtBtnUp = txtBtnUp
+  LoadInfo.txtx0 = txtx0
+  LoadInfo.txtxf = txtxf
+  LoadInfo.txty0 = txty0
+  LoadInfo.txtyf = txtyf
+  LoadInfo.txtjump = txtBtnJump
+ 
+ 'load Scene 
+  LoadInfo.txtScenaName = txtScenaName
+  LoadInfo.cmbhighlight = cmbhighlight
+  LoadInfo.cmbbackground = cmbbackground
+  LoadInfo.cmbselect = cmbselect
+  LoadInfo.cmbaudio = cmbaudio
+  
+  'LoadChapters
+  LoadInfo.txtChapterAction = txtChapterAction
+  LoadInfo.txtChapterName = txtChapterName
+  LoadInfo.cmbfilechapter = cmbfilechapter
+  
+ 
+ 'Module of SaveInfo   
+  Saveinfo.txtBtnDown = txtBtnDown
+  Saveinfo.txtBtnLeft = txtBtnLeft
+  Saveinfo.txtBtnName = txtBtnName
+  Saveinfo.txtBtnRight = txtBtnRight
+  Saveinfo.txtBtnUp = txtBtnUp
+  Saveinfo.txtx0 = txtx0
+  Saveinfo.txtxf = txtxf
+  Saveinfo.txty0 = txty0
+  Saveinfo.txtyf = txtyf
+  Saveinfo.txtjump = txtBtnJump
+  
+  Saveinfo.txtScenaName = txtScenaName
+  Saveinfo.cmbhighlight = cmbhighlight
+  Saveinfo.cmbbackground = cmbbackground
+  Saveinfo.cmbselect = cmbselect
+  Saveinfo.cmbaudio = cmbaudio
+  
+  
+    'LoadChapters
+  SaveInfo.txtChapterAction = txtChapterAction
+  SaveInfo.txtChapterName = txtChapterName
+  SaveInfo.cmbfilechapter = cmbfilechapter
+  
+  ME.ShowTabStrip(5)
+  
+'Load Files
+i = 0
+ME.MiPath = "backgrounds"
+FOR EACH file IN RDir(ME.MiPath, "*.jpeg")
+    i = i + 1
+    cmbbackground.Add(file, i)
+NEXT
+
+i = 0
+ME.MiPath = "audios"
+FOR EACH file IN RDir(ME.MiPath, "*.mp2")
+     i = i + 1
+    cmbaudio.Add(file, i)
+NEXT
+
+i = 0
+ME.MiPath = "layers"
+FOR EACH file IN RDir(ME.MiPath, "*.png")
+    i = i + 1
+    cmbselect.Add(file, i)
+    cmbhighlight.Add(file, i)
+NEXT
+
+i = 0
+ME.MiPath = "chapters"
+FOR EACH file IN RDir(ME.MiPath, "*.mpg")
+    i = i + 1
+    cmbfilechapter.Add(file, i)
+NEXT
+  
 END
 
 PUBLIC SUB Form_Open()
-  List = NEW ListDVD
+
 END
 
 PUBLIC SUB TreeView1_DblClick()
-  DIM aScene AS Scene
-  DIM SceneName AS String
-  DIM ButtonName AS String
+  DIM aTitleset AS DVDtitleset
   DIM aButton AS DVDButton
-  DIM CurrentScene AS Scene  
+  DIM parentTitleset AS String
   DIM type AS String
-  
-  type = List.type_node(TreeView1.Current.Key)  
-  IF type = "proyect" THEN
-    SceneName = InputBox("Nombre de la Escena", "Escena")
-    IF NOT SceneName = FALSE THEN 
-      TreeView1.Add(SceneName, SceneName, NULL, TreeView1.Current.Key, NULL)
-      ME.Project.AddScene(SceneName)
-      List.AddList(SceneName, "scene")
-    ENDIF   
- 
+
+  TreeView1[ProjectName].Expanded = TRUE 
+    
+  type = ME.Project.type_node(TreeView1.Current.Key) 
+  IF type = "project" THEN
+   ME.Project.InsertTitleSet(TreeView1)    
+  ELSE IF type = "scenes" THEN 
+    TreeView1.MoveParent
+    ME.Project.InsertScene(TreeView1, TreeView1.Item.Key)         
+  ELSE IF type = "titles" THEN 
+    TreeView1.MoveParent
+   ME.Project.InsertTitle(TreeView1, TreeView1.Item.Key)  
   ELSE IF type = "scene" THEN 
-    ButtonName = InputBox("Nombre del botón", "Botón")
-    IF NOT ButtonName = FALSE THEN 
-      TreeView1.Add(ButtonName, ButtonName, NULL, TreeView1.Current.Key, NULL)
-      CurrentScene = ME.Project.FindScene(TreeView1.Current.Key)  
-      CurrentScene.AddButton(ButtonName)
-      List.AddList(ButtonName, "button")
-    ENDIF 
+    ME.Project.InsertButton(TreeView1)
+  ELSE IF type = "title" THEN   
+      ME.Project.InsertChapter(TreeView1)
   ELSE IF type = "button" THEN
+    Message("Type " & type & " imposible do a action")  
+  ELSE IF type = "chapter" THEN
     Message("Type " & type & " imposible do a action") 
   ELSE 
     Message("Desconocido: " & type)
   ENDIF 
-END
+  
+END 'End treeview1 Doble Click
 
 PUBLIC SUB MenuSalir_Click()
 
@@ -55,20 +152,45 @@ PUBLIC SUB Form_Close()
 END
 
 PUBLIC SUB MenuNuevo_Click()
-  DIM ProjectName AS String  
+  DIM picProyect AS Picture
+
+  picProyect = Picture["proyect.png"]  
+  
   ProjectName = InputBox("Proyecto Nuevo", "Nombre")
   IF NOT ProjectName = FALSE THEN
-    ME.Project = NEW DVDProject(ProjectName)
+    ME.Project = NEW DVDProject(ProjectName, "/home/irving/Desktop/FrogDVD/") 'Nombre y ruta del proyecto
     ME.Title = "FrogDVD salida: " & ProjectName
-    TreeView1.Add(ProjectName, ProjectName, NULL, NULL, NULL)
-    List.AddList(ProjectName, "proyect")
+    TreeView1.Add(ProjectName, ProjectName, picProyect, NULL, NULL)
+    ME.Project.List.AddList(ProjectName, "project", project)
     TreeView1[ProjectName].Expanded = TRUE    
   ENDIF 
 END
 
+
 PUBLIC SUB TreeView1_Click()
-  DIM CurrentScene AS Scene
-  CurrentScene = ME.Project.FindScene(TreeView1.Current.Key)
+  DIM type AS String  
+  
+  type = ME.Project.List.type_node(TreeView1.Current.Key)  
+  IF type = "proyect" THEN 
+    ME.ShowTabStrip(4)
+  ELSE IF type = "button" THEN 
+    ME.ShowTabStrip(2)
+    ME.CurrentButton = LoadInfo.Button(ME.Project, TreeView1)
+  ELSE IF type = "scene" THEN 
+    ME.ShowTabStrip(0)
+    ME.CurrentScene = LoadInfo.Scene(ME.Project, TreeView1)
+  ELSE IF type = "titleset" THEN
+    ME.ShowTabStrip(3) 
+  ELSE IF type = "title" THEN 
+    ME.ShowTabStrip(5)
+  ELSE IF type = "chapter" THEN 
+    ME.ShowTabStrip(1)
+    ME.CurrentChapter = LoadInfo.chapter(ME.Project, TreeView1)
+  ELSE 
+    ME.ShowTabStrip(5)
+    'HidePnls      
+  ENDIF
+
 
 END
 
@@ -100,4 +222,102 @@ PUBLIC SUB PictureBox1_MouseUp()
   ENDIF
 
 
+END
+
+PUBLIC SUB Button1_Click()
+  'TextArea1.Text = ME.Project.TraslateSpumuxXml()    
+
+END
+
+PUBLIC SUB btnSaveBtn_Click()
+  
+  Saveinfo.Button(CurrentButton)
+
+END
+
+PUBLIC SUB btnSaveScene_Click()
+
+   Saveinfo.Scene(CurrentScene)
+
+END
+
+PUBLIC SUB btnSaveChapter_Click()
+
+  Saveinfo.Chapter(CurrentChapter)
+
+END
+
+PUBLIC SUB MenuEjecutar_Click()
+  ME.proceso = SHELL ("ls -l /home/irving/") WAIT FOR READ 
+
+END
+
+PUBLIC SUB Process_Read()
+
+  DIM sLine AS String
+
+  LINE INPUT #LAST, sLine
+  
+  contenido = contenido & sLine & "\n"
+  TextArea2.text = contenido
+
+END
+
+PUBLIC SUB MenuProducirEscenas_Click()
+
+  ME.Project.TraslateSpumuxXml(TextArea2)
+
+END
+
+PUBLIC SUB MenuProducirDVD_Click()
+
+  ME.Project.TraslateSpumuxXml(TextArea2)
+  ME.Project.SaveXMLDVD(ME.Project.TraslateDvdauthorXml(), "dvd.xml")
+  ME.Project.produce(TextArea2)
+  ME.Project.Play(TextArea2)
+
+END
+
+PUBLIC SUB MenuSobre_Click()
+
+  Message.info("Josue Ballinas Barrios\n Irving E. Sulub Chan \n Universidad del Caribe, Diciembre 2010", " Aceptar ")
+
+END
+
+
+PUBLIC SUB ShowTabStrip(ntab AS Integer)
+  DIM i AS Integer
+  FOR i = 0 TO 5 STEP 1
+    IF TabStrip1[i].Visible = TRUE THEN 
+      TabStrip1[i].Visible = FALSE
+    ENDIF 
+  NEXT 
+  TabStrip1[ntab].Visible = TRUE  
+END
+
+PUBLIC SUB cmbselect_Click()
+
+  
+
+END
+
+PUBLIC SUB ConstruirXML_Click()
+
+      ME.Project.SaveXMLDVD(ME.Project.TraslateDvdauthorXml(), "dvd.xml") 
+
+END
+
+PUBLIC SUB MenuGuardar_Click()
+
+  ME.Project.SaveProject()
+
+END
+
+PUBLIC SUB MenuAbrir_Click()
+  DIM Project AS DVDxmlParser
+
+  project = NEW DVDxmlParser("/home/irving/Desktop/FrogDVD/")
+  project.OpenFile()
+  ME.Project = project.ReadProject(TreeView1)
+  ME.ProjectName = ME.Project.Name
 END

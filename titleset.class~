@@ -1,0 +1,3 @@
+' Gambas class file
+PUBLIC Name AS String
+PUBLIC Scenes AS Collection

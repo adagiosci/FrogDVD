@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--Heroes Characters-->
+<characters serie="Heroes">
+ <heroe id="1" name="Claire Bennet">
+  <name>Claire Bennet</name>
+  <played_by>Hayden Penettiere</played_by>
+  <ability>Rapid cellular regeneration</ability>
+ </heroe>
+ <heroe id="2" name="Hiro Nakamura">
+  <name>Hiro Nakamura</name>
+  <played_by>Masi Oka</played_by>
+  <ability>Space-time manipulation: teleportation &amp; time travel</ability>
+ </heroe>
+</characters>

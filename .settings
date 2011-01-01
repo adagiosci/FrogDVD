@@ -1,5 +1,6 @@
 [Breakpoints]
-Count=0
+Breakpoint[1]="FMain.121"
+Count=1
 
 [DebugWindow]
 Count=0
@@ -14,12 +15,24 @@ SearchString=True
 [OpenFile]
 File[1]="FMain.form"
 Active=1
-File[2]="DVDProject.class:18.29"
-File[3]="Scene.class:8.17"
-File[4]="DVDButton.class:5.11"
-File[5]="FMain.class:75.54"
-Count=5
+File[2]="DVDProject.class:76.36"
+File[3]="FMain.class:321.0"
+File[4]="DVDxmlParser.class:43.35"
+File[5]="DVDButton.class:32.0"
+File[6]="DVDtitleset.class:38.0"
+File[7]="DVDScene.class:32.0"
+File[8]="ListDVD.class:24.0"
+File[9]="StructList.class:10.0"
+File[10]="DVDTitle.class:10.0"
+Count=10
 
 [Watches]
-Count=0
+Count=7
+Watch[1]="Name"
+Watch[2]="Path"
+Watch[3]="Titlesetname"
+Watch[4]="reader.Node.Name"
+Watch[5]="parent"
+Watch[6]="TitleName"
+Watch[7]="nametset"
 

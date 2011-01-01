@@ -1,0 +1,60 @@
+' Gambas module file
+'Textboxbutton
+PUBLIC txtBtnName AS TextBox
+PUBLIC txtBtnDown AS TextBox
+PUBLIC txtBtnUp AS TextBox
+PUBLIC txtBtnLeft AS TextBox
+PUBLIC txtBtnRight AS TextBox
+PUBLIC txtx0 AS TextBox
+PUBLIC txty0 AS TextBox
+PUBLIC txtxf AS TextBox
+PUBLIC txtyf AS TextBox
+PUBLIC txtjump AS TextBox
+
+
+'TextBoxScene
+PUBLIC txtScenaName AS TextBox
+PUBLIC cmbbackground AS ComboBox
+PUBLIC cmbaudio AS ComboBox
+PUBLIC cmbhighlight AS ComboBox
+PUBLIC cmbselect AS ComboBox
+
+'TextBoxChapter
+PUBLIC txtChapterName AS TextBox
+PUBLIC cmbfilechapter AS ComboBox
+PUBLIC txtChapterAction AS TextBox
+
+
+PUBLIC SUB Button(CurrentButton AS DVDButton)
+  
+  CurrentButton.Name = txtBtnName.Text
+  CurrentButton.x0 = txtx0.Text
+  CurrentButton.y0 = txty0.Text
+  CurrentButton.xf = txtxf.Text
+  CurrentButton.yf = txtyf.Text
+  CurrentButton.up = txtBtnUp.Text
+  CurrentButton.down = txtBtnDown.Text
+  CurrentButton.aLeft = txtBtnLeft.Text
+  CurrentButton.aRight = txtBtnRight.Text
+  CurrentButton.Jump = txtjump.Text
+  
+END
+
+PUBLIC SUB Scene(CurrentScene AS DVDScene)
+ 
+  CurrentScene.Name = txtScenaName.Text
+  CurrentScene.Audio = cmbaudio.Text 
+  CurrentScene.Background = cmbbackground.Text
+  CurrentScene.Highlight = cmbhighlight.Text 
+  CurrentScene.aSelect = cmbselect.Text  
+  
+END
+
+PUBLIC SUB Chapter(CurrentChapter AS DVDChapter)
+  
+  CurrentChapter.Name = txtChapterName.Text
+  CurrentChapter.Action = txtChapterAction.Text
+  CurrentChapter.File = txtChapterFile.Text
+  
+END
+

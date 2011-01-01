@@ -1,0 +1,72 @@
+' Gambas module file
+'Textbox for Button
+PUBLIC txtBtnName AS TextBox
+PUBLIC txtBtnDown AS TextBox
+PUBLIC txtBtnUp AS TextBox
+PUBLIC txtBtnLeft AS TextBox
+PUBLIC txtBtnRight AS TextBox
+PUBLIC txtx0 AS TextBox
+PUBLIC txty0 AS TextBox
+PUBLIC txtxf AS TextBox
+PUBLIC txtyf AS TextBox
+PUBLIC txtjump AS TextBox
+
+'TextBoxScene
+PUBLIC txtScenaName AS TextBox
+PUBLIC cmbbackground AS ComboBox
+PUBLIC cmbaudio AS ComboBox
+PUBLIC cmbhighlight AS ComboBox
+PUBLIC cmbselect AS ComboBox
+
+'TextBoxChapter
+PUBLIC txtChapterName AS TextBox
+PUBLIC cmbfilechapter AS ComboBox
+PUBLIC txtChapterAction AS TextBox
+
+
+PUBLIC FUNCTION Button(Project AS DVDProject, TreeView1 AS TreeView) AS DVDButton
+  DIM aButton AS DVDButton
+     
+  aButton = Project.FindButton(TreeView1.Current.Key)  
+  txtBtnName.Text = aButton.Name
+  txtBtnDown.Text = aButton.down
+  txtBtnUp.Text = aButton.up
+  txtBtnLeft.Text = aButton.aLeft
+  txtBtnRight.Text = aButton.aRight
+  txtx0.Text = aButton.x0
+  txty0.Text = aButton.y0
+  txtxf.Text = aButton.xf
+  txtyf.Text = aButton.yf
+  txtjump.Text = aButton.Jump
+  
+  
+  RETURN aButton
+END
+
+PUBLIC FUNCTION Scene(Project AS DVDProject, TreeView1 AS TreeView) AS DVDScene
+  DIM aScene AS DVDScene
+  
+  aScene = Project.FindScene(TreeView1.Current.Key)  
+  txtScenaName.Text = aScene.Name
+  cmbaudio.Text = aScene.Audio
+  cmbbackground.Text = aScene.Background
+  cmbhighlight.Text = aScene.Highlight
+  cmbselect.Text = aScene.aSelect 
+
+  RETURN aScene
+END
+
+PUBLIC FUNCTION chapter(Project AS DVDProject, TreeView1 AS TreeView) AS DVDChapter
+  
+  DIM aChapter AS DVDChapter
+  
+  aChapter = Project.FindChapter(TreeView1.Current.Key)
+  txtChapterName.Text = aChapter.Name
+  txtChapterAction.Text = aChapter.Action
+  cmbfilechapter.Text = aChapter.File
+  
+  RETURN aChapter
+END
+
+
+

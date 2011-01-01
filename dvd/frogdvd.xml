@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project name="QueSoy?">
+ <titleset id="1" name="Titleset1" path="/home/irving/Desktop/FrogDVD/">
+  <scene id="1" name="Pig" path="/home/irving/Desktop/FrogDVD/" audio="silent.mp2" background="pig-NTSC.jpeg" highlight="pig-NTSC-High.png" select="pig-NTSC-Sel.png">
+   <button id="1" name="PigButton1" x0="84" y0="127" xf="126" yf="181" down="PigButton2" up="PigButton3" left="PigButton3" right="PigButton2" jump="title 1"/>
+   <button id="2" name="PigButton2" x0="123" y0="225" xf="165" yf="274" down="PigButton3" up="PigButton1" left="PigButton1" right="PigButton3" jump="title 2"/>
+   <button id="3" name="PigButton3" x0="246" y0="305" xf="284" yf="356" down="PigButton1" up="PigButton3" left="PigButton1" right="PigButton2" jump="title 3"/>
+  </scene>
+ </titleset>
+</project>

@@ -1,12 +1,18 @@
 # Gambas Form File 2.0
 
 { Form Form
-  MoveScaled(0,0,81,79)
+  MoveScaled(0,0,94,79)
   Text = ("")
   { MenuArchivo Menu
     Text = ("\xC3\x81rchivo")
     { MenuNuevo Menu
       Text = ("Nuevo")
+    }
+    { MenuAbrir Menu
+      Text = ("Abrir")
+    }
+    { MenuGuardar Menu
+      Text = ("Guardar")
     }
     { MenuSalir Menu
       Text = ("Salir")
@@ -15,23 +21,30 @@
   { MenuEdicion Menu
     Text = ("Edici\xC3\xB3n")
   }
-  { MenuCompilar Menu
-    Text = ("Compilar")
+  { MenuProducir Menu
+    Text = ("Producir")
+    { MenuProducirDVD Menu
+      Text = ("Producir DVD")
+    }
+    { MenuProducirEscenas Menu
+      Text = ("Producir Escenas")
+    }
+    { ConstruirXML Menu
+      Text = ("Construir XML")
+    }
   }
   { MenuAyuda Menu
     Text = ("Ayuda")
-  }
-  { ToolPanel1 ToolPanel
-    MoveScaled(0,0,81,6)
-    Index = 0
-    Text = ("Toolbar 0")
-    Index = 0
+    { MenuSobre Menu
+      Text = ("Acerca de...")
+    }
   }
   { TreeView1 TreeView
-    MoveScaled(1,6,28,68)
+    MoveScaled(1,1,28,72)
   }
   { Panel1 Panel
-    MoveScaled(30,7,52,67)
+    MoveScaled(95,12,46,51)
+    Visible = False
     { ComboBox1 ComboBox
       MoveScaled(3,6,17,3)
       Text = ("")
@@ -41,7 +54,7 @@
       Text = ("Audio de Fondo")
     }
     { Label2 Label
-      MoveScaled(3,10,18,3)
+      MoveScaled(4,9,18,3)
       Text = ("Imagen de Fondo")
     }
     { ComboBox2 ComboBox
@@ -49,8 +62,205 @@
       Text = ("")
     }
     { PictureBox1 PictureBox
-      MoveScaled(23,1,22,64)
+      MoveScaled(27,1,22,64)
       Picture = Picture["remote.jpg"]
     }
+    { Button1 Button
+      MoveScaled(12,37,16,3)
+      Text = ("Button1")
+    }
+    { TextArea1 TextArea
+      MoveScaled(1,51,49,1)
+      Text = ("")
+    }
+    { TextBox1 TextBox
+      MoveScaled(2,18,24,3)
+      Text = ("")
+    }
+  }
+  { TabStrip1 TabStrip
+    MoveScaled(30,1,64,73)
+    Count = 6
+    Index = 0
+    Text = ("Escena")
+    { Frame1 Frame
+      MoveScaled(6,27,48.75,16)
+      Text = ("Frame1")
+      { Label16 Label
+        MoveScaled(2,9,11,3)
+        Text = ("Select")
+      }
+      { highlight Label
+        MoveScaled(2,4,8,3)
+        Text = ("highlight")
+      }
+      { cmbhighlight ComboBox
+        MoveScaled(12,4,33,3)
+        Text = ("")
+      }
+      { cmbselect ComboBox
+        MoveScaled(12,9,33,3)
+        Text = ("")
+      }
+    }
+    { Frame2 Frame
+      MoveScaled(6,5,48.75,17)
+      Text = ("Frame2")
+      { Label18 Label
+        MoveScaled(2,12,6,3)
+        Text = ("Audio")
+      }
+      { Label17 Label
+        MoveScaled(2,8,11,3)
+        Text = ("Background")
+      }
+      { txtScenaName TextBox
+        MoveScaled(14,3,33,3)
+        Text = ("")
+      }
+      { Label4 Label
+        MoveScaled(2,3,8,3)
+        Text = ("Nombre")
+      }
+      { cmbbackground ComboBox
+        MoveScaled(14,8,33,3)
+        Text = ("")
+      }
+      { cmbaudio ComboBox
+        MoveScaled(14,13,33,3)
+        Text = ("")
+      }
+    }
+    { btnSaveScene Button
+      MoveScaled(20,44,16,3)
+      Text = ("Guardar")
+    }
+    Index = 1
+    Text = ("Capítulo")
+    { txtChapterAction TextBox
+      MoveScaled(16,18,24,3)
+      Text = ("")
+    }
+    { Label20 Label
+      MoveScaled(8,10,8,3)
+      Text = ("File")
+    }
+    { txtChapterName TextBox
+      MoveScaled(16,3,24,3)
+      Text = ("")
+    }
+    { Label7 Label
+      MoveScaled(7,3,9,3)
+      Text = ("Nombre")
+    }
+    { Label21 Label
+      MoveScaled(8,18,7,3)
+      Text = ("Action")
+    }
+    { btnSaveChapter Button
+      MoveScaled(14,34,16,3)
+      Text = ("Guardar")
+    }
+    { cmbfilechapter ComboBox
+      MoveScaled(16,10,24,3)
+      Text = ("")
+    }
+    Index = 2
+    Text = ("Botón")
+    { btnSaveBtn Button
+      MoveScaled(38,26,16,3)
+      Text = ("Guardar")
+    }
+    { txtBtnJump TextBox
+      MoveScaled(21,42,13,3)
+      Text = ("")
+    }
+    { Label19 Label
+      MoveScaled(12,42,9,3)
+      Text = ("Jump")
+    }
+    { Label14 Label
+      MoveScaled(12,31.5,5,3)
+      Text = ("Left")
+    }
+    { txtBtnLeft TextBox
+      MoveScaled(21,30.5,13,3)
+      Text = ("")
+    }
+    { txtBtnRight TextBox
+      MoveScaled(21,36,13,3)
+      Text = ("")
+    }
+    { Label15 Label
+      MoveScaled(12,37,7,3)
+      Text = ("Right")
+    }
+    { Label13 Label
+      MoveScaled(12,25,7,3)
+      Text = ("Down")
+    }
+    { txtBtnDown TextBox
+      MoveScaled(21,25,13,3)
+      Text = ("")
+    }
+    { txtBtnUp TextBox
+      MoveScaled(21,20,13,3)
+      Text = ("")
+    }
+    { Label3 Label
+      MoveScaled(12,20,4,3)
+      Text = ("Up")
+    }
+    { Label12 Label
+      MoveScaled(1,13,3,3)
+      Text = ("y0")
+    }
+    { txty0 TextBox
+      MoveScaled(6,13,8,3)
+      Text = ("")
+    }
+    { txtyf TextBox
+      MoveScaled(23,13,8,3)
+      Text = ("")
+    }
+    { Label10 Label
+      MoveScaled(20,13,3,3)
+      Text = ("yf")
+    }
+    { Label9 Label
+      MoveScaled(20,8,3,3)
+      Text = ("xf")
+    }
+    { txtxf TextBox
+      MoveScaled(23,8,8,3)
+      Text = ("")
+    }
+    { txtx0 TextBox
+      MoveScaled(6,8,8,3)
+      Text = ("")
+    }
+    { txtBtnName TextBox
+      MoveScaled(12,2,30,3)
+      Text = ("")
+    }
+    { Name Label
+      MoveScaled(3,2,9,3)
+      Text = ("Nombre")
+    }
+    { Label11 Label
+      MoveScaled(1,8,4,3)
+      Text = ("x0")
+    }
+    Index = 3
+    Text = ("Titleset")
+    Index = 4
+    Text = ("Project")
+    Index = 5
+    Text = ("")
+    Index = 0
+  }
+  { TextArea2 TextArea
+    MoveScaled(42,57,31,17)
+    Text = ("TextArea2")
   }
 }

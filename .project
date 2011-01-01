@@ -1,5 +1,10 @@
 # Gambas Project File 2.0
+# Compiled with Gambas 2.20.2
 Title=FrogDVD
 Startup=FMain
+Version=0.0.1
 Library=gb.gui
 Library=gb.form
+Library=gb.xml
+Library=gb.xml.xslt
+TabSize=2

@@ -1,18 +1,31 @@
 ' Gambas class file
-PUBLIC List AS Collection
+PUBLIC cList AS Collection
 
 PUBLIC SUB _new()
-  ME.List = NEW Collection  
+  ME.cList = NEW Collection  
 END
 
-PUBLIC FUNCTION Type_node(node AS String) AS String
+PUBLIC FUNCTION Type_node(name AS String) AS String
   DIM aList AS StructList
-  aList = List[node]
+  aList = ME.cList[name]
   RETURN aList.type  
 END
 
-PUBLIC SUB AddList(node AS String, type AS String)
+PUBLIC FUNCTION TObject(name AS String) AS Object
+  
   DIM aList AS StructList
-  aList = NEW StructList(node, type)
-  List.Add(aList, node)
+  aList = ME.cList[name]
+  RETURN aList.node
+  
+END
+
+
+PUBLIC SUB AddList(name AS String, type AS String, node AS Object)
+  DIM aList AS StructList
+  aList = NEW StructList(name, type, node)
+  ME.cList.Add(aList, name)
+END 
+
+PUBLIC FUNCTION CheckExistNode(node AS String) AS Boolean
+  RETURN ME.cList.Exist(node) 
 END

@@ -1,16 +1,77 @@
 ' Gambas class file
-PUBLIC x0 AS Integer
-PUBLIC y0 AS Integer
-PUBLIC xf AS Integer
-PUBLIC yf AS Integer
-PUBLIC Action AS Scene
+PUBLIC x0 AS String
+PUBLIC y0 AS String
+PUBLIC xf AS String
+PUBLIC yf AS String
+PUBLIC Action AS DVDScene
+PUBLIC Jump AS String
 PUBLIC Name AS String
+PUBLIC up AS String
+PUBLIC down AS String
+PUBLIC aLeft AS String
+PUBLIC aRight AS String
+PUBLIC Path AS String
 
-PUBLIC SUB _new(_Name AS String, x0 AS Integer, y0 AS Integer, xf AS Integer, yf AS Integer)
+PUBLIC SUB _new(Name AS String, Path AS String)
   
   ME.x0 = x0
   ME.y0 = y0
   ME.xf = xf
   ME.yf = yf
-  ME.Name = _Name
+  ME.Name = Name  
+
+  ME.x0 = ""
+  ME.y0 = ""
+  ME.xf = ""
+  ME.yf = ""
+  ME.up = ""
+  ME.down = ""
+  ME.aLeft = ""
+  ME.aRight = ""
+  ME.Jump = ""
+  ME.Path = Path
+END
+
+PUBLIC FUNCTION TraslateSpumuxXml() AS String
+  DIM name AS String
+  DIM x0 AS String
+  DIM y0 AS String
+  DIM y1 AS String
+  DIM x1 AS String
+  DIM up AS String
+  DIM down AS String
+  DIM aLeft AS String
+  DIM aRight AS String
+  DIM s AS String
+  
+  name = "name=\"" & ME.Name & "\" "
+  x0 = "x0=\"" & ME.x0 & "\" "
+  y0 = "y0=\"" & ME.y0 & "\" "
+  x1 = "x1=\"" & ME.xf & "\" "
+  y1 = "y1=\"" & ME.yf & "\" "
+  up = "up=\"" & ME.up & "\" "
+  down = "down=\"" & ME.down & "\" "
+  aLeft = "left=\"" & ME.aLeft & "\" "
+  aRight = "right=\"" & ME.aRight & "\" "
+  
+  s = "<button " & name & x0 & y0 & x1 & y1 & up & down & aLeft & aRight & "/>" 
+
+  RETURN s
+  
+END
+
+PUBLIC FUNCTION TraslateDvdauthorXml() AS String
+  DIM name AS String
+  DIM s AS String
+  
+  s = ""  
+  name = "name=\"" & ME.Name & "\""   
+  s = s & "<button " & name & ">jump " & ME.Jump & ";</button>\n"
+  
+  RETURN s 
+END 
+
+PUBLIC SUB SaveButton(writer AS XmlWriter, _i AS Integer)  
+  writer.StartElement("button", ["id", Str(_i), "name", ME.Name, "x0", ME.x0, "y0", ME.y0, "xf", ME.xf, "yf", ME.yf, "down", ME.down, "up", ME.up, "left", ME.aLeft, "right", ME.aRight, "jump", ME.Jump])
+  writer.EndElement
 END

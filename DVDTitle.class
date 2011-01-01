@@ -1,0 +1,52 @@
+' Gambas class file
+PUBLIC Name AS String
+PUBLIC Action AS String
+PUBLIC Path AS String
+PUBLIC Chapters AS Collection
+
+PUBLIC SUB _new(Name AS String, Path AS String) 
+  ME.Chapters = NEW Collection 
+  ME.Name = Name  
+  ME.Path = Path
+END
+
+PUBLIC SUB AddChapter(ChapterName AS String, List AS ListDVD)
+  DIM aChapter AS DVDChapter 
+      
+  aChapter = NEW DVDChapter(ChapterName, ME.Path)  
+  ME.Chapters.Add(aChapter, aChapter.Name)
+  List.AddList(aChapter.Name, "chapter", aChapter)
+END
+
+PUBLIC FUNCTION FindChapter(ChapterName AS String) AS DVDChapter 
+  RETURN ME.Chapters[ChapterName]  
+END
+
+PUBLIC FUNCTION TraslateDvdauthorXml() AS String
+  DIM aChapter AS DVDChapter
+  DIM s AS String
+  s = "<pgc>\n"
+  
+  FOR EACH aChapter IN Chapters   
+      s = s & aChapter.TraslateDvdauthorXml() & "\n"      
+  NEXT 
+' s = s & "<post>" & ME.Action & "; </post>"
+  s = s & "</pgc>\n"
+  RETURN s 
+END 
+
+PUBLIC SUB SaveTitle(writer AS XmlWriter, _i AS Integer)
+  DIM aChapter AS DVDChapter
+  DIM i AS Integer
+  writer.StartElement("title", ["id", Str(_i), "name", ME.Name, "path", ME.Path])
+  
+  i = 1
+  FOR EACH aChapter IN ME.Chapters
+    aChapter.SaveChapter(writer, i)
+    i = i + 1
+  NEXT
+
+  writer.EndElement 'title
+  
+END
+

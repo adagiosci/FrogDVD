@@ -1,0 +1,222 @@
+' Gambas class file
+
+PUBLIC reader AS XmlReader
+PUBLIC iNode AS String
+PUBLIC iName AS String
+PUBLIC Path AS String
+
+PUBLIC SUB _new(Path AS String)
+  
+ ME.reader = NEW XmlReader
+ ME.iNode = ""
+ ME.iName = ""
+ ME.Path = Path
+ 
+END
+
+PUBLIC SUB OpenFile()
+
+  TRY ME.reader.Open(ME.Path & "dvd/frogdvd.xml")
+  IF ERROR THEN 
+    Message.Error("Error when trying to open the frogdvd.xml file!")
+    RETURN 
+  ENDIF 
+  
+END
+
+PUBLIC SUB ReadChapters(aTreeView1 AS TreeView, reader AS XmlReader, project AS DVDProject, Title AS DVDTitle)
+  
+  DIM Name AS String
+  DIM Path AS String
+  DIM File AS String
+  
+  DIM aChapter AS DVDChapter
+  DO WHILE TRUE
+    TRY reader.Read()
+    IF reader.Eof THEN BREAK 
+    IF reader.Node.Name = "title" THEN BREAK 
+    IF reader.Node.name = "chapter" THEN 
+      FOR EACH reader.Node.Attributes
+        IF reader.Node.name = "name" THEN Name = reader.Node.Value
+        IF reader.Node.Name = "path" THEN Path = reader.Node.Value
+        IF reader.Node.Name = "file" THEN File = reader.Node.Value
+      NEXT
+      aChapter = project.FindChapter(aTreeView1, Name, Title.Name)
+      aChapter.Path = Path
+      aChapter.File = File
+    ENDIF 
+  LOOP
+  
+END
+
+
+
+PUBLIC SUB ReadButtons(aTreeView1 AS TreeView, reader AS XmlReader, project AS DVDProject, Scene AS DVDScene)
+  
+  DIM x0 AS String
+  DIM y0 AS String
+  DIM xf AS String
+  DIM yf AS String
+
+  DIM Jump AS String
+  DIM Name AS String
+  DIM up AS String
+  DIM down AS String
+  DIM aLeft AS String
+  DIM aRight AS String
+  DIM Path AS String
+  DIM picButton AS Picture  
+  
+  DIM aButton AS DVDButton
+  
+  picButton = Picture["button.png"]
+  
+  DO WHILE TRUE
+    TRY reader.Read()
+    IF reader.eof THEN BREAK
+    IF reader.Node.Name = "scene" THEN BREAK  
+    IF reader.Node.Name = "button" THEN 
+      FOR EACH reader.Node.Attributes
+        IF reader.Node.name = "name" THEN Name = reader.Node.Value
+        IF reader.Node.name = "x0" THEN x0 = reader.Node.Value
+        IF reader.Node.name = "y0" THEN y0 = reader.Node.Value
+        IF reader.Node.name = "xf" THEN xf = reader.Node.Value
+        IF reader.Node.name = "yf" THEN yf = reader.Node.Value
+        IF reader.Node.name = "jump" THEN Jump = reader.Node.Value
+        IF reader.Node.name = "up" THEN up = reader.Node.Value
+        IF reader.Node.name = "down" THEN down = reader.Node.Value
+        IF reader.Node.name = "left" THEN aLeft = reader.Node.Value
+        IF reader.Node.name = "right" THEN aRight = reader.Node.Value
+        IF reader.Node.name = "path" THEN Path = reader.Node.Value    
+      NEXT
+      aButton = project.AddButton(aTreeView1, Name, Scene.Name)
+      aButton.x0 = x0
+      aButton.y0 = y0
+      aButton.xf = xf
+      aButton.yf = yf
+      aButton.Jump = Jump
+      aButton.up = up
+      aButton.down = down
+      aButton.aLeft = aLeft
+      aButton.aRight = aRight
+      aButton.Path = Path
+    ENDIF  
+  LOOP 
+  
+END
+
+
+PUBLIC SUB ReadScene(aTreeView1 AS TreeView, reader AS XmlReader, project AS DVDProject, Titleset AS DVDtitleset) 
+  DIM picScene AS Picture  
+  DIM Name AS String
+  DIM Path AS String
+  DIM Audio AS String
+  DIM Background AS String
+  DIM Highlight AS String
+  DIM aSelect AS String  
+  DIM aScene AS DVDScene
+  
+  picScene = Picture["escene.png"]
+  
+  IF reader.Node.Name = "scene" THEN
+    FOR EACH reader.Node.Attributes 
+      IF reader.Node.Name = "name" THEN Name = reader.Node.Value
+      IF reader.Node.name = "path" THEN Path = reader.Node.Value
+      IF reader.Node.name = "audio" THEN Audio = reader.Node.Value
+      IF reader.Node.name = "background" THEN Background = reader.Node.Value
+      IF reader.Node.name = "highlight" THEN Highlight = reader.Node.Value
+      IF reader.Node.Name = "select" THEN aSelect = reader.Node.Value
+    NEXT
+      
+    aScene = project.AddScene(aTreeView1, Name, "Escenas" & Titleset.Name, Titleset.Name)
+    aScene.Audio = Audio
+    aScene.Background = Background
+    aScene.Highlight = Highlight
+    aScene.aSelect = aSelect
+    aScene.Path = Path
+       
+    ME.ReadButtons(aTreeView1, reader, project, aScene)
+  ENDIF   
+END
+
+PUBLIC SUB ReadTitle(aTreeView1 AS TreeView, reader AS XmlReader, project AS DVDProject, Titleset AS DVDtitleset)
+  
+  DIM Name AS String
+  DIM Path AS String
+  DIM aTitle AS DVDTitle
+
+  IF reader.Node.Name = "title" THEN 
+    FOR EACH reader.Node.Attributes
+      IF reader.Node.Name = "name" THEN Name = reader.Node.Value
+      IF reader.Node.Name = "path" THEN path = reader.Node.Value
+    NEXT  
+    aTitle = project.AddTitle(aTreeView1, name, "Titulos" & Titleset.Name, Titleset.Name)
+    aTitle.Path = Path
+    
+    ME.ReadChapters(aTreeView1, reader, project, aTitle)
+  ENDIF   
+END
+
+PUBLIC SUB ReadTitlesets(aTreeView1 AS TreeView, reader AS XmlReader, project AS DVDProject) 
+  DIM picTitleset AS Picture
+  DIM Name AS String
+  DIM Path AS String
+  DIM Titleset AS DVDtitleset
+
+  picTitleset = Picture["titleset.png"] 
+
+  DO WHILE TRUE  
+    TRY reader.Read()
+    IF reader.Eof THEN BREAK 
+  
+    IF reader.Node.Name = "titleset" THEN 
+      FOR EACH reader.Node.Attributes
+        IF reader.Node.Name = "name" THEN Name = reader.Node.Value
+        IF reader.Node.name = "path" THEN Path = reader.Node.Value
+      NEXT
+      
+      IF Name <> "" AND Path <> "" THEN 
+        project.AddTitleset(aTreeView1, Name)
+        Titleset = project.FindTitleset(Name)
+      ENDIF 
+      
+    DO WHILE TRUE      
+      TRY reader.Read()
+      IF reader.Eof THEN BREAK 
+        ME.ReadScene(aTreeView1, reader, project, Titleset)  
+        ME.ReadTitle(aTreeView1, reader, project, Titleset) 
+      LOOP   
+    ENDIF 
+  LOOP  
+END
+
+
+PUBLIC FUNCTION ReadProject(aTreeView1 AS TreeView) AS DVDProject
+  DIM picProyect AS Picture
+  DIM project AS DVDProject
+
+  picProyect = Picture["proyect.png"]    
+  project = NULL
+  DO WHILE TRUE
+    TRY reader.Read()
+    IF reader.Eof THEN BREAK 
+ 
+    IF reader.Node.Name = "project" THEN 
+      FOR EACH reader.Node.Attributes
+        IF reader.Node.Name = "name" THEN
+          TRY aTreeView1.Add(reader.Node.Value, reader.Node.Value, picProyect, NULL, NULL)
+          project = NEW DVDProject(reader.Node.Value, ME.Path)
+          project.List.AddList(reader.Node.Value, "project", project)
+        ENDIF 
+      NEXT 
+      ME.ReadTitlesets(aTreeView1, reader, project) 'Agregamos los titlesets al proyecto  
+    ENDIF 
+  LOOP   
+
+  RETURN project  
+END
+
+
+
+
+

@@ -1,0 +1,11 @@
+<subpictures> 
+ <stream> 
+ <spu start="00:00:00.0" end="00:00:00.0" 
+ force="yes" 
+highlight="/home/irving/Desktop/FrogDVD/layers/bus-NTSC-High.png" 
+select="/home/irving/Desktop/FrogDVD/layers/bus-NTSC-Sel.png">
+<button name="Button1" x0="21" y0="54" x1="22" y1="45" up="Button1" down="Button1" left="Button1" right="Button1" />
+</spu> 
+ </stream> 
+ </subpictures>
+

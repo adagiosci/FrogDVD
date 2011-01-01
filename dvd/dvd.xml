@@ -1,0 +1,31 @@
+<dvdauthor dest="/home/irving/Desktop/FrogDVD/DVDi" jumppad="1">
+<vmgm>
+<menus lang="en">
+<video format="ntsc" aspect="16:9" resolution="720x480" />
+<pgc entry="title">
+<pre>
+g2 = random(1);
+if(g2 eq 1) jump titleset 1 menu 1;
+</pre>
+</pgc>
+</menus>
+</vmgm >
+<titleset>
+<menus>
+<pgc>
+<button name="Button1">jump Button1;</button>
+<vob file="/home/irving/Desktop/FrogDVD/backgrounds/bus-NTSC.mpg"/>
+</pgc>
+
+</menus>
+<titles>
+<pgc>
+<vob file="/home/irving/Desktop/FrogDVD/chapters/Felicidades.mpg" chapters="00:00:00.000"/><post>call menu vmg; </post>
+</pgc>
+
+</titles>
+</titleset>
+
+
+</dvdauthor>
+

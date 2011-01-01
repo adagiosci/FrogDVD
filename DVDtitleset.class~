@@ -1,0 +1,130 @@
+' Gambas class file
+PUBLIC Name AS String
+PUBLIC Path AS String
+PUBLIC Scenes AS Collection
+PUBLIC Titles AS Collection
+PUBLIC proceso AS Process
+PUBLIC contenido AS String
+PUBLIC TextArea2 AS TextArea
+
+PUBLIC SUB _new(name AS String, Path AS String)
+  ME.Scenes = NEW Collection
+  ME.Titles = NEW Collection
+  ME.Name = name
+  ME.contenido = ""
+  ME.Path = Path
+END
+
+PUBLIC SUB AddScene(SceneName AS String, List AS ListDVD)
+  DIM aScene AS DVDScene  
+  
+  aScene = NEW DVDScene(SceneName, ME.Path)
+  ME.Scenes.Add(aScene, aScene.Name)
+  List.AddList(aScene.Name, "scene", aScene)
+END
+
+PUBLIC SUB AddTitle(TitleName AS String, List AS ListDVD)  
+  DIM aTitle AS DVDTitle  
+  
+  aTitle = NEW DVDTitle(TitleName, ME.Path)
+  ME.Titles.Add(aTitle, aTitle.Name)
+  
+  List.AddList(aTitle.Name, "title", aTitle)
+END
+
+PUBLIC FUNCTION FindScene(SceneName AS String) AS DVDScene  
+  RETURN ME.Scenes[SceneName]  
+END
+
+PUBLIC FUNCTION FindTitle(TitleName AS String) AS DVDTitle 
+  RETURN ME.Titles[TitleName]  
+END
+
+PUBLIC FUNCTION CountScenes() AS Integer
+  
+ RETURN Scenes.Count
+  
+END
+PUBLIC FUNCTION TraslateSpumuxXml(TextArea2 AS TextArea) AS String
+  DIM aScene AS DVDScene
+  DIM s AS String
+  DIM script AS String
+  s = ""
+  script = ""
+  ME.TextArea2 = TextArea2
+  FOR EACH aScene IN ME.Scenes 
+      
+      s = s & aScene.TraslateSpumuxXml() & "\n"       
+      ME.SaveXMLDVD(s, "spumux.xml") 
+      script = ME.Path & "dvd/frog-script.sh -background " & ME.Path & "backgrounds/" & aScene.Background & " -high " & ME.Path & "layers/" & aScene.Highlight & " -sel " & ME.Path & "layers/" & aScene.aSelect & " -audio " & ME.Path & "audios/" & aScene.Audio & " -format NTSC -xml " & ME.Path & "dvd/spumux.xml"     
+      ME.proceso = SHELL (script) WAIT FOR READ           
+      s = ""    
+           
+  NEXT   
+  
+  RETURN s 
+END 
+
+PUBLIC FUNCTION TraslateDvdauthorXml() AS String
+  DIM aScene AS DVDScene
+  DIM aTitle AS DVDTitle
+  DIM s AS String
+  s = "<titleset>\n"
+  s = s & "<menus>\n"
+  FOR EACH aScene IN ME.Scenes   
+      s = s & aScene.TraslateDvdauthorXml() & "\n"      
+  NEXT 
+  s = s & "</menus>\n"
+  
+  s = s & "<titles>\n"
+  FOR EACH aTitle IN ME.Titles   
+      s = s & aTitle.TraslateDvdauthorXml() & "\n"      
+  NEXT
+  s = s & "</titles>\n" 
+  
+  s = s & "</titleset>\n"
+  RETURN s 
+END 
+
+PUBLIC SUB Process_Read()
+
+  DIM sLine AS String
+
+  LINE INPUT #LAST, sLine
+  
+  ME.contenido = ME.contenido & sLine
+  ME.TextArea2.text = ME.contenido
+
+END
+
+PUBLIC SUB SaveXMLDVD(s AS String, name AS String) 
+ 
+  DIM F AS file 'declarar un manejador de fichero 
+  f = OPEN ME.Path & "dvd/" & name FOR CREATE 'abrir el archivo archivo.txt para crearlo.
+  f.EndOfLine = gb.unix 'El fin de línea es LF
+  PRINT #f, s 'imprimir 3 variables separadas por tabulador 
+  CLOSE (f) 
+
+END
+
+PUBLIC SUB SaveTitleSet(writer AS XmlWriter, _i AS Integer)
+  DIM i AS Integer
+  DIM aScene AS DVDScene
+  DIM aTitle AS DVDTitle
+  
+  writer.StartElement("titleset", ["id", Str(_i), "name", ME.Name, "path", ME.Path]) 
+   
+  i = 1
+  FOR EACH aScene IN ME.Scenes
+    aScene.SaveScene(writer, i)
+    i = i + 1
+  NEXT 
+  
+  i = 1
+  FOR EACH aTitle IN ME.Titles
+    aTitle.SaveTitle(writer, i)
+    i = i + 1
+  NEXT 
+  writer.EndElement 'Titleset
+  
+END

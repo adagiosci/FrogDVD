@@ -1,0 +1,84 @@
+' Gambas class file
+PUBLIC Name AS String
+PUBLIC Path AS String
+PUBLIC Audio AS String
+PUBLIC Background AS String
+PUBLIC Highlight AS String
+PUBLIC aSelect AS String
+PUBLIC Action AS String
+PUBLIC Buttons AS Collection
+PUBLIC parent AS String
+
+
+PUBLIC SUB _new(Name AS String, Path AS String) 
+  ME.Buttons = NEW Collection 
+  ME.Name = Name  
+  ME.aSelect = "Select"
+  ME.Highlight = "Highlight"
+  ME.Background = "Background"
+  ME.Path = Path
+  ME.Audio = "Audio"
+  ME.parent = parent
+END
+
+PUBLIC SUB AddButton(ButtonName AS String, List AS ListDVD)
+  DIM aButton AS DVDButton  
+    
+  aButton = NEW DVDButton(ButtonName, ME.Path)  
+  ME.Buttons.Add(aButton, aButton.Name)
+  List.AddList(aButton.Name, "button", aButton)
+END
+
+PUBLIC FUNCTION FindButton(ButtonName AS String) AS DVDButton 
+  RETURN ME.Buttons[ButtonName]  
+END
+
+PUBLIC FUNCTION TraslateSpumuxXml() AS String
+   DIM aButton AS DVDButton 
+   DIM s AS String
+   
+   DIM head AS String
+   DIM Highlight AS String
+   DIM aSelect AS String
+   DIM footer AS String
+   s = ""
+   head = "<subpictures> \n <stream> \n <spu start=\"00:00:00.0\" end=\"00:00:00.0\" \n force=\"yes\" \n"
+   Highlight = "highlight=\"" & ME.Path & "layers/" & ME.Highlight & "\" \n"
+   aSelect = "select=\"" & ME.Path & "layers/" & ME.aSelect & "\">\n"
+   FOR EACH aButton IN ME.Buttons   
+      s = s & aButton.TraslateSpumuxXml() & "\n"       
+   NEXT 
+   footer = "</spu> \n </stream> \n </subpictures>"
+    s = head & Highlight & aSelect & s & footer
+   RETURN s
+END
+
+
+
+PUBLIC FUNCTION TraslateDvdauthorXml() AS String
+  DIM aButton AS DVDButton
+  DIM s AS String
+  
+  s = "<pgc>\n"  
+  FOR EACH aButton IN ME.Buttons   
+      s = s & aButton.TraslateDvdauthorXml()      
+  NEXT
+  s = s & "<vob file=\"" & ME.Path & "backgrounds/" & Left(ME.Background, -5) & ".mpg" & "\"/>\n" 
+  s = s & "</pgc>\n"
+  
+  RETURN s 
+END 
+
+PUBLIC SUB SaveScene(writer AS XmlWriter, _i AS Integer)
+    DIM aButton AS DVDButton
+    DIM i AS Integer
+    writer.StartElement("scene", ["id", Str(_i), "name", ME.Name, "path", ME.Path, "audio", ME.Audio, "background", ME.Background, "highlight", ME.Highlight, "select", ME.aSelect])
+    i = 1
+    FOR EACH aButton IN Buttons
+      aButton.SaveButton(writer, i)
+      i = i + 1
+    NEXT
+    writer.EndElement 'Escene
+  
+END
+

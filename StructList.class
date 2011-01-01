@@ -1,11 +1,12 @@
 ' Gambas class file
 PUBLIC type AS String
 PUBLIC name AS String
+PUBLIC node AS Object
 
-PUBLIC SUB _new(_name AS String, _type AS String)
+PUBLIC SUB _new(_name AS String, _type AS String, _node AS Object)
   
   ME.type = _type
   ME.name = _name
-   
+  ME.node = _node
 END
 

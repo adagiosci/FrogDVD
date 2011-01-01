@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<project name="QuinSoy?">
+ <titleset id="1" name="Titleset1" path="/home/irving/Desktop/FrogDVD/">
+  <scene id="1" name="Escena1" path="/home/irving/Desktop/FrogDVD/" audio="Audio" background="Background" highlight="Highlight" select="Select">
+   <button id="1" name="button1" x0="s" y0="as" xf="as" yf=""/>
+  </scene>
+ </titleset>
+</project>

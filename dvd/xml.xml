@@ -1,0 +1,60 @@
+DIM reader AS XmlReader
+DIM iNode AS String
+DIM iName AS String
+
+reader = NEW XmlReader
+TRY reader.Open("/home/irving/Desktop/FrogDVD/dvd/Heroes.xml")
+IF ERROR THEN 
+Message.Error("Error when trying to open the Heroes.XML file!")
+RETURN 
+ENDIF
+
+DO WHILE TRUE
+	TRY reader.Read()
+	IF reader.Eof THEN BREAK
+
+	SELECT CASE reader.Node.Name
+		CASE "characters"
+		FOR EACH reader.Node.Attributes
+			IF reader.Node.Name = "series" THEN 
+				TRY TreeView1.Add(reader.Node.Value, "Characters of the TV Series: " & reader.Node.Value, NULL, NULL)
+			ENDIF 
+		NEXT
+
+		CASE "heroe", "villain"
+			FOR EACH reader.Node.Attributes
+				IF reader.Node.Name = "id" THEN iNode = reader.Node.Value
+				IF reader.Node.Name = "name" THEN iName = reader.Node.Value
+			NEXT 
+			IF iNode <> "" AND iName <> "" THEN 
+				TRY TreeView1.Add(iNode, iNode & " - " & iName)
+			ENDIF
+			TRY reader.Read()
+			IF ERROR THEN RETURN
+			DO WHILE TRUE
+				IF reader.Node.Type = XmlReaderNodeType.Element THEN 
+				SELECT CASE reader.Node.Name
+					CASE "name"
+						TRY reader.Read()
+						TRY TreeView1.Add(iNode & "-n", "Name: " & reader.Node.Value, NULL, iNode)       
+					CASE "played_by"
+						TRY reader.Read()
+						TRY TreeView1.Add(iNode & "-p", "Played by: " & reader.Node.Value, NULL, iNode)        
+					CASE "ability"
+						TRY reader.Read()
+						TRY TreeView1.Add(iNode & "-a", "Ability: " & reader.Node.Value, NULL, iNode)        
+				END SELECT
+				TRY reader.Read()
+				IF ERROR THEN 
+					BREAK 
+				ELSE 
+					IF reader.Node.Type = XmlReaderNodeType.EndElement THEN 
+						BREAK 
+					ENDIF 
+				TRY reader.Read()
+					IF ERROR THEN BREAK 
+			LOOP
+		
+	END SELECT
+LOOP 
+reader.Close()

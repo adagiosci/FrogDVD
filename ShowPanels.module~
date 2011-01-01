@@ -1,0 +1,19 @@
+' Gambas module file
+
+PUBLIC pnlProyect AS Panel
+PUBLIC pnlButton AS Panel
+PUBLIC pnlChapter AS Panel
+PUBLIC pnlScene AS Panel
+PUBLIC pnlTitle AS Panel   
+PUBLIC pnlTitleSet AS Panel 
+
+
+PUBLIC FUNCTION HidePnls()
+  ME.pnlProyect.Visible = FALSE
+  ME.pnlButton.Visible = FALSE
+  ME.pnlChapter.Visible = FALSE
+  ME.pnlScene.Visible = FALSE
+  ME.pnlTitle.Visible = FALSE   
+  ME.pnlTitleSet.Visible = FALSE 
+END
+
